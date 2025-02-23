@@ -1,13 +1,13 @@
 import logging
 from pathlib import Path
+from urllib.parse import urljoin
 
 from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
 from pydantic import BaseModel
 from rich import print
 from rich.logging import RichHandler
 
-BRAVE_PATH = "c:\\Users\\sipho\\AppData\\Local\\BraveSoftware\\Brave-Browser\\Application\\brave.exe"
-URL = "https://www.gsmarena.com/samsung_galaxy_s25-13610.php"
+URL = "https://www.gsmarena.com"
 TIMEOUT = 60_000
 
 # configure logging
@@ -26,25 +26,41 @@ class GSMArenaProcessor:
         self.page = page
 
     def execute(self):
+        pass
+
+    def _goto_phone_finder_results(self):
+        self.page.goto(
+            urljoin(URL, "apple_iphone_13_pro_max-11089.php"),
+            timeout=TIMEOUT,
+            wait_until="domcontentloaded",
+        )
+
+
+class GSMArenaPhonePageProcessor:
+    def __init__(self, page):
+        self.page = page
+
+    def execute(self):
         phone_name = self._get_phone_name()
         return phone_name
 
     def _get_phone_name(self):
-        try:
-            element = self.page.query_selector(
-                "#body > div > div.review-header > div > div.article-info-line.page-specs.light.border-bottom > h1"
-            )
-            return element.inner_text() if element else "Element not found"
-        except PlaywrightTimeoutError:
-            return "Timeout while fetching phone name"
+        element = self.page.query_selector(
+            "#body > div > div.review-header > div > div.article-info-line.page-specs.light.border-bottom > h1"
+        )
+        if element:
+            return element.inner_text()
+        else:
+            raise ValueError("Element not found")
 
 
 # init playwright and launch browser
 def launch_browser():
-    executable_path = Path(BRAVE_PATH)
+    # executable_path = Path()
     playwright = sync_playwright().start()
     browser = playwright.chromium.launch(
-        headless=False, executable_path=str(executable_path)
+        headless=False,
+        # executable_path=str(executable_path)
     )
     return browser, playwright
 
@@ -56,10 +72,14 @@ def main():
     try:
         page.goto(URL, timeout=TIMEOUT, wait_until="domcontentloaded")
         processor = GSMArenaProcessor(page)
-        data = processor.execute()
-        print(data)
+        processor._goto_phone_finder_results()
+        processor = GSMArenaPhonePageProcessor(page)
+        phone_name = processor.execute()
+        print(f"Phone name: {phone_name}")
     except PlaywrightTimeoutError:
-        print("Timeout while loading the page")
+        logger.error("Timeout while loading the page")
+    except Exception as e:
+        logger.error(e)
     finally:
         browser.close()
         playwright.stop()
