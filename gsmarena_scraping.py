@@ -76,7 +76,7 @@ class Gsmarena:
         header = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
         }
-        time.sleep(10)
+        time.sleep(5)
 
         # Handling the connection error of the url.
         try:
@@ -207,7 +207,7 @@ class Gsmarena:
             print(f"{self.new_folder_name} directory already exists")
 
     def save_specification_to_file(self):
-        """Main function to save specifications, modified to use our target list and skip existing devices"""
+        """Main function to save specifications, writes each device immediately after scraping"""
         phone_brands = self.crawl_phone_brands()
         self.create_folder()
 
@@ -227,45 +227,47 @@ class Gsmarena:
 
             # Check if output file exists to append or create
             file_exists = output_file.exists()
-            mode = "a" if file_exists else "w"
 
-            # Initialize or append to CSV file
-            with open(output_file, mode, encoding="utf-8", newline="") as file:
-                dict_writer = csv.DictWriter(file, fieldnames=self.features)
-                if not file_exists:
+            # Create/append file and write header if needed
+            if not file_exists:
+                with open(output_file, 'w', encoding='utf-8', newline='') as file:
+                    dict_writer = csv.DictWriter(file, fieldnames=self.features)
                     dict_writer.writeheader()
 
-                # Process each model
-                for i, link in enumerate(all_links, 1):
-                    print(f"Processing model {i}/{len(all_links)}: {link}")
-                    datum = self.crawl_phones_models_specification(link, brand_name)
+            # Process each model
+            for i, link in enumerate(all_links, 1):
+                print(f"Processing model {i}/{len(all_links)}: {link}")
+                datum = self.crawl_phones_models_specification(link, brand_name)
 
-                    if datum:
-                        # Check again if we already have this model (belt and suspenders)
-                        model_name = datum.get("Model Name", "")
-                        if (
-                            brand_key in self.existing_devices
-                            and model_name in self.existing_devices[brand_key]
-                        ):
-                            print(f"Skipping duplicate model: {model_name}")
-                            continue
+                if datum:
+                    # Check again if we already have this model
+                    model_name = datum.get("Model Name", "")
+                    if (
+                        brand_key in self.existing_devices
+                        and model_name in self.existing_devices[brand_key]
+                    ):
+                        print(f"Skipping duplicate model: {model_name}")
+                        continue
 
-                        # Clean data
-                        datum = {
-                            k: v.replace("\n", " ").replace("\r", " ")
-                            for k, v in datum.items()
-                        }
+                    # Clean data
+                    datum = {
+                        k: v.replace("\n", " ").replace("\r", " ")
+                        for k, v in datum.items()
+                    }
+
+                    # Immediately write this device to the CSV file
+                    with open(output_file, 'a', encoding='utf-8', newline='') as file:
+                        dict_writer = csv.DictWriter(file, fieldnames=self.features)
                         dict_writer.writerow(datum)
 
-                        # Add to existing devices to avoid duplicates in this run
-                        if brand_key not in self.existing_devices:
-                            self.existing_devices[brand_key] = []
-                        self.existing_devices[brand_key].append(model_name)
+                    # Add to existing devices to avoid duplicates in this run
+                    if brand_key not in self.existing_devices:
+                        self.existing_devices[brand_key] = []
+                    self.existing_devices[brand_key].append(model_name)
 
-                        print(f"Completed {i}/{len(all_links)}")
+                    print(f"Completed and saved {i}/{len(all_links)}")
 
-            print(f"Data saved to {output_file}")
-
+            print(f"Completed processing {brand_name}")
 
 def main():
     # Path to your input CSV file with brands to scrape
