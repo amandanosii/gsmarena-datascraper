@@ -9,14 +9,20 @@ from rich import print
 
 
 class Gsmarena:
+
     def __init__(self, input_csv_path):
         self.url = "https://www.gsmarena.com/"
         self.new_folder_name = "GSMArenaDataset"
         self.absolute_path = Path.cwd() / self.new_folder_name
-        self.features = ["Brand", "Model Name", "Model Image"]
+        self.features = [
+            "Brand",
+            "Model Name",
+            #  ,"Model Image"
+        ]
 
         # Load the input CSV with desired brands and models
-        self.target_devices = self.load_target_devices(input_csv_path)
+        # self.target_devices = self.load_target_devices(input_csv_path)
+        self.target_devices = self.load_target_brands(input_csv_path)
 
     def load_target_devices(self, csv_path):
         """Load the brands and models from CSV file"""
@@ -39,6 +45,23 @@ class Gsmarena:
             return devices
         except Exception as e:
             print(f"Error loading target devices: {e}")
+            exit(1)
+
+    def load_target_brands(self, csv_path):
+        try:
+            df = pd.read_csv(csv_path)
+
+            if not all(col in df.columns for col in ["Brand"]):
+                raise ValueError("Input CSV must contain 'Brand' column")
+
+            brands = []
+            for _, row in df.iterrows():
+                brand = row["Brand"].strip().lower()
+                brands.append(brand)
+
+            return brands
+        except Exception as e:
+            print(f"Error loading target brands: {e}")
             exit(1)
 
     def crawl_html_page(self, sub_url):
@@ -69,10 +92,10 @@ class Gsmarena:
 
         for a in table_a:
             brand_name = a.contents[0]
-            target_devices_keys = self.target_devices.keys()
+            # target_devices_keys = self.target_devices.keys()
 
             # Only include brands that are in our target list
-            if str(brand_name).lower() in target_devices_keys:
+            if str(brand_name).lower() in self.target_devices:
                 temp = [
                     a["href"].split("-")[0],
                     brand_name,
@@ -111,23 +134,23 @@ class Gsmarena:
 
         return links
 
-    def filter_models_by_name(self, links, brand):
-        """Filter device links to only those models we want"""
-        filtered_links = []
-        target_models = self.target_devices.get(brand.lower(), [])
+    # def filter_models_by_name(self, links, brand):
+    #     """Filter device links to only those models we want"""
+    #     filtered_links = []
+    #     # target_models = self.target_devices.get(brand.lower(), [])
 
-        for link in links:
-            # Extract model name from link
-            model_name = str(link.split("-")[0].replace("_", " ")).upper()
+    #     for link in links:
+    #         # Extract model name from link
+    #         model_name = str(link.split("-")[0].replace("_", " ")).upper()
 
-            # Check if this model is in our target list (partial match)
-            for target_model in target_models:
-                if target_model.lower() in model_name.lower():
-                    filtered_links.append(link)
-                    print(f"Found matching model: {model_name}")
-                    break
+    #         # Check if this model is in our target list (partial match)
+    #         # for target_model in target_models:
+    #         #     if target_model.lower() in model_name.lower():
+    #         filtered_links.append(link)
+    #         print(f"Found matching model: {model_name}")
+    #         break
 
-        return filtered_links
+    #     return filtered_links
 
     def crawl_phones_models_specification(self, link, phone_brand):
         """Same as original, crawl the specs for a specific phone"""
@@ -142,7 +165,7 @@ class Gsmarena:
 
         phone_data.update({"Brand": phone_brand})
         phone_data.update({"Model Name": model_name})
-        phone_data.update({"Model Image": model_img})
+        # phone_data.update({"Model Image": model_img})
 
         for data1 in range(len(soup.find_all("table"))):
             table = soup.find_all("table")[data1]
@@ -156,11 +179,14 @@ class Gsmarena:
                     continue
                 else:
                     # Handle duplicate keys
-                    if temp[0] in phone_data.keys():
-                        temp[0] = temp[0] + "_1"
-                    if temp[0] not in self.features:
+                    # if temp[0] in phone_data.keys():
+                    #     temp[0] = temp[0] + "_1"
+                    # if temp[0] not in self.features:
+                    #     self.features.append(temp[0])
+                    # phone_data.update({temp[0]: temp[1]})
+                    if "price" in str(temp[0]).lower():
                         self.features.append(temp[0])
-                    phone_data.update({temp[0]: temp[1]})
+                        phone_data.update({temp[0]: temp[1]})
 
         return phone_data
 
@@ -181,7 +207,7 @@ class Gsmarena:
         # Process each brand in our list
         for brand in phone_brands:
             brand_name = brand[1]
-            output_file = self.absolute_path / f"{brand[0].title()}.csv"
+            output_file = self.absolute_path / f"{str(brand[0]).title()}.csv"
 
             print(f"Working on {brand_name} brand.")
 
@@ -189,16 +215,16 @@ class Gsmarena:
             all_links = self.crawl_phones_models(brand[2])
 
             # Filter to only the models we want
-            filtered_links = self.filter_models_by_name(all_links, brand_name)
+            # filtered_links = self.filter_models_by_name(all_links, brand_name)
 
-            if not filtered_links:
+            if not all_links:
                 print(f"No matching models found for {brand_name}")
                 continue
 
             # Process each model
             phones_data = []
-            for i, link in enumerate(filtered_links, 1):
-                print(f"Processing model {i}/{len(filtered_links)}: {link}")
+            for i, link in enumerate(all_links, 1):
+                print(f"Processing model {i}/{len(all_links)}: {link}")
                 datum = self.crawl_phones_models_specification(link, brand_name)
 
                 if datum:
@@ -208,7 +234,7 @@ class Gsmarena:
                         for k, v in datum.items()
                     }
                     phones_data.append(datum)
-                    print(f"Completed {i}/{len(filtered_links)}")
+                    print(f"Completed {i}/{len(all_links)}")
 
             # Save to CSV
             if phones_data:

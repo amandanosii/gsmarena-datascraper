@@ -1,215 +1,42 @@
-Brand,Model
- STYLO           , AFRICA                                                   
- STYLO           , COBALT                                                   
- QUEST MOBILE    , DOGDER                                                   
- STYLO           , EPIC                                                     
- STYLO           , FLARE                                                    
- HISENSE         , HISENSE E31 LITE                                         
- HISENSE         , HISENSE E32 LITE                                         
- HISENSE         , HISENSE E32 PRO                                          
- HISENSE         , HISENSE E33                                              
- HISENSE         , HISENSE E34                                              
- HISENSE         , HISENSE E50 LITE              
- HISENSE         , HISENSE E60 LITE                                         
- HISENSE         , HISENSE E70                                              
- HISENSE         , HISENSE E70 PRO                                          
- HISENSE         , HISENSE INFINITY E30 LITE                                
- HISENSE         , HISENSE INFINITY E50 LITE
- HISENSE         , HISENSE U3 2021                            
- HISENSE         , HISENSE U30                                              
- HISENSE         , HISENSE U40                                              
- HISENSE         , HISENSE U40 LITE                                         
- HISENSE         , HISENSE U41 LITE                                         
- HISENSE         , HISENSE U42 LITE                                         
- HISENSE         , HISENSE U50                                              
- HISENSE         , HISENSE U50 LITE                                         
- HISENSE         , HISENSE U60                                              
- HISENSE         , HISENSE U60 LITE                                         
- HISENSE         , HISENSE U607                                             
- HISENSE         , HISENSE U61                                              
- HISENSE         , HISENSE U70                                              
- HISENSE         , HISENSE U70 PRO                                          
- HISENSE         , HISENSE U71                                              
- HISENSE         , HISENSE U963
- HISENSE         , HISENSE U963                                             
- HONOR           , HONOR 200 LITE                                           
- HONOR           , HONOR 90 LITE                                            
- HONOR           , HONOR X5 PLUS                                            
- HONOR           , HONOR X5B                                                
- HONOR           , HONOR X6A                                                
- HONOR           , HONOR X7B                                                
- HUAWEI          , HUAWEI NOVA 11I                                          
- HUAWEI          , HUAWEI NOVA 12I                                          
- HUAWEI          , HUAWEI NOVA 7I                          
- HUAWEI          , HUAWEI NOVA 8I                                           
- HUAWEI          , HUAWEI NOVA Y60                                          
- HUAWEI          , HUAWEI NOVA Y61                                          
- HUAWEI          , HUAWEI NOVA Y70                                          
- HUAWEI          , HUAWEI NOVA Y71                                          
- HUAWEI          , HUAWEI NOVA Y72                                          
- HUAWEI          , HUAWEI NOVA Y90                                          
- HUAWEI          , HUAWEI NOVA Y91                                          
- HUAWEI          , HUAWEI P SMART 2021                                      
- HUAWEI          , HUAWEI P30 LITE                                          
- HUAWEI          , HUAWEI P40 LITE
- HUAWEI          , HUAWEI Y5 (2019)                                         
- HUAWEI          , HUAWEI Y5 LITE                                           
- HUAWEI          , HUAWEI Y7 PRIME 2019                                     
- HUAWEI          , HUAWEI Y7P                                               
- HUAWEI          , HUAWEI Y9A                                               
- ITEL            , ITEL A04                                                 
- ITEL            , ITEL A05S                                                
- ITEL            , ITEL A18                                                 
- ITEL            , ITEL A48                                                 
- ITEL            , ITEL A60S                                                
- ITEL            , ITEL AC13                                                
- ITEL            , ITEL AC33                                                
- ITEL            , ITEL AC50                                                
- ITEL            , ITEL IT2160                                              
- ITEL            , ITEL IT5026                                              
- ITEL            , ITEL P40                                                 
- ITEL            , ITEL V51 LTE                                             
- ITEL            , ITEL V52 LTE                                             
- ITEL            , ITEL VALUE 100                                           
- ITEL            , ITEL VISION 1 PRO                                        
- KOBILE          , L200                                                     
- MOBICEL         , MOBICEL BERRY 2                                          
- MOBICEL         , MOBICEL C1                                               
- MOBICEL         , MOBICEL C2                                               
- MOBICEL         , MOBICEL C2.1                                             
- MOBICEL         , MOBICEL C3                                               
- MOBICEL         , MOBICEL C6 4G CLOUD FEATURE PHONE                        
- MOBICEL         , MOBICEL CLIK                                             
- MOBICEL         , MOBICEL COSMO LTE                                        
- MOBICEL         , MOBICEL EPIC                                             
- MOBICEL         , MOBICEL F40                                              
- MOBICEL         , MOBICEL F41                                              
- MOBICEL         , MOBICEL FENDY                                            
- MOBICEL         , MOBICEL FORCE                                            
- MOBICEL         , MOBICEL G4                                               
- MOBICEL         , MOBICEL IX                                               
- MOBICEL         , MOBICEL LEGEND                                           
- MOBICEL         , MOBICEL MX1                                              
- MOBICEL         , MOBICEL MX2                                              
- MOBICEL         , MOBICEL MX2 PLUS                                         
- MOBICEL         , MOBICEL MX3                                              
- MOBICEL         , MOBICEL P11                                              
- MOBICEL         , MOBICEL P5                                               
- MOBICEL         , MOBICEL PULSE                                            
- MOBICEL         , MOBICEL PX10                                             
- MOBICEL         , MOBICEL R1 PLUS                                          
- MOBICEL         , MOBICEL R7                                               
- MOBICEL         , MOBICEL RIO                                              
- MOBICEL         , MOBICEL RX PRO                                           
- MOBICEL         , MOBICEL S1                                               
- MOBICEL         , MOBICEL S105                                             
- MOBICEL         , MOBICEL S2                                               
- MOBICEL         , MOBICEL S3                                               
- MOBICEL         , MOBICEL SLIM                                             
- MOBICEL         , MOBICEL SWITCH GO                                        
- MOBICEL         , MOBICEL TITAN (2020)                                     
- MOBICEL         , MOBICEL VIBE                                             
- MOBICEL         , MOBICEL VIBE (2021)                                      
- MOBICEL         , MOBICEL Z3                                               
- MOBICEL         , MOBICEL Z4                                               
- MOTOROLA        , MOTOROLA MOTO G8 PLUS                                    
- QUEST MOBILE    , MZANSI                                                   
- NOKIA           , NOKIA 105                                                
- NOKIA           , NOKIA 105 (2023)                                         
- NOKIA           , NOKIA C02                                                
- NOKIA           , NOKIA C1                                                 
- NOKIA           , NOKIA C1 2ND EDITION                                     
- NOKIA           , NOKIA C10                                                
- NOKIA           , NOKIA C12                                                
- NOKIA           , NOKIA C2                                                 
- NOKIA           , NOKIA C2 2ND EDITION                                     
- NOKIA           , NOKIA C20                                                
- NOKIA           , NOKIA C30                                                
- NOKIA           , NOKIA G10                                                
- OPPO            , OPPO A15                                                 
- OPPO            , OPPO A16S                                                
- OPPO            , OPPO A74 5G                                              
- STYLO           , PHEZULU                                                  
- STYLO           , POWER                                                    
- STYLO           , POWER PLUS                                               
- PREMIOX         , PREMIO A10                                               
- PREMIOX         , PREMIO A16                                               
- PREMIO          , PREMIO S85                                               
- QUEST           , QUEST KUHLE                                              
- QUEST           , QUEST Q24                                                
- REALME          , REALME NOTE 50                                           
- REDMI           , REDMI A1                                                 
- REDMI           , REDMI A3                                                 
- RIZZEN          , RIZZEN NOVATAB X1 SMART                                  
- STYLO           , ROCK                                                     
- STYLO           , ROYAL                                                    
- STYLO           , RUSH                                                     
- SAMSUNG         , SAMSUNG GALAXY A01                                       
- SAMSUNG         , SAMSUNG GALAXY A01 CORE                                  
- SAMSUNG         , SAMSUNG GALAXY A02                                       
- SAMSUNG         , SAMSUNG GALAXY A03 CORE                                  
- SAMSUNG         , SAMSUNG GALAXY A04                                       
- SAMSUNG         , SAMSUNG GALAXY A04E                                      
- SAMSUNG         , SAMSUNG GALAXY A04S                                      
- SAMSUNG         , SAMSUNG GALAXY A05                                       
- SAMSUNG         , SAMSUNG GALAXY A05S                                      
- SAMSUNG         , SAMSUNG GALAXY A06                                       
- SAMSUNG         , SAMSUNG GALAXY A10                                       
- SAMSUNG         , SAMSUNG GALAXY A10S                                      
- SAMSUNG         , SAMSUNG GALAXY A11                                       
- SAMSUNG         , SAMSUNG GALAXY A12                                       
- SAMSUNG         , SAMSUNG GALAXY A13 4G                                    
- SAMSUNG         , SAMSUNG GALAXY A14                                       
- SAMSUNG         , SAMSUNG GALAXY A15                                       
- SAMSUNG         , SAMSUNG GALAXY A2 CORE                                   
- SAMSUNG         , SAMSUNG GALAXY A20                                       
- SAMSUNG         , SAMSUNG GALAXY A21S                                      
- SAMSUNG         , SAMSUNG GALAXY A22 5G                                    
- SAMSUNG         , SAMSUNG GALAXY A23                                       
- SAMSUNG         , SAMSUNG GALAXY A24                                       
- SAMSUNG         , SAMSUNG GALAXY A25 5G                                    
- SAMSUNG         , SAMSUNG GALAXY A30                                       
- SAMSUNG         , SAMSUNG GALAXY A30S                                      
- SAMSUNG         , SAMSUNG GALAXY A31                                       
- SAMSUNG         , SAMSUNG GALAXY A32                                       
- SAMSUNG         , SAMSUNG GALAXY A33 5G                                    
- SAMSUNG         , SAMSUNG GALAXY A34 5G                                    
- SAMSUNG         , SAMSUNG GALAXY A35 5G                                    
- SAMSUNG         , SAMSUNG GALAXY A53 5G                                    
- SAMSUNG         , SAMSUNG GALAXY A55 5G                                    
- SAMSUNG         , SAMSUNG GALAXY GRAND PRIME PLUS                          
- SAMSUNG         , SAMSUNG GALAXY J2 CORE                                   
- SAMSUNG         , SAMSUNG GALAXY J4 CORE                                   
- SAMSUNG         , SAMSUNG GALAXY S22 5G                                    
- STYLO           , STYLO AIR                                                
- STYLO           , STYLO ATLAS                                              
- STYLO           , STYLO BRAVE                                              
- STYLO           , STYLO COMET 4G                                           
- STYLO           , STYLO E18 STAR                                           
- STYLO           , STYLO INKOSI PRO                                         
- STYLO           , STYLO INKOSI PRO 4G                                      
- STYLO           , STYLO MERCURY                                            
- STYLO           , STYLO RAIN                                               
- STYLO           , STYLO SATURM                                             
- STYLO           , STYLO SONIC                                              
- STYLO           , STYLO STEP UP                                            
- STYLO           , STYLO SWIFT 4G                                           
- TCL             , TCL 403                                                  
- TECNO           , TECNO POP 5 LTE                                          
- TECNO           , TECNO POP 7                                              
- TECNO           , TECNO POP 7 PRO                     
- TECNO           , TECNO SPARK 5 AIR                                        
- TECNO           , TECNO SPARK 7                                            
- TECNO           , TECNO SPARK GO 2023
- STYLO           , TITANIUM                                                 
- STYLO           , TITANIUM PLUS                                            
- VIVO            , VIVO Y01                                                 
- VIVO            , VIVO Y02                                                 
- VIVO            , VIVO Y03                                                 
-VIVO, VIVO Y12S                         
- VIVO            , VIVO Y1S                                                 
- VIVO            , VIVO Y20S                                                
- VIVO            , VIVO Y21                                                 
- XIAOMI          , XIAOMI REDMI A2                                          
- STYLO           , YEBO                                                     
- TONGZEKANGWEI   , ZLT S50                                                  
+Brand,,
+    APPLE,,
+    AWIT,,
+    BLACKVIEW,,
+    BONFLY,,
+    CHUWI,,
+    FAMOUS,,
+    FONES,,
+    GEECOO,,
+    HISENSE,,
+    HONOR,,
+    HTC,,
+    HUAWEI,,
+    ITEL,,
+    KOBILE,,
+    LESIA,,
+    MOBICEL,,
+    MOBICELL,,
+    MOTOROLA,,
+    MTN,,
+    NOKIA,,
+    NULL,,
+    OPPO,,
+    PREMIO,,
+    PREMIOX,,
+    QUEST,,
+    QUEST,,
+    MOBILE,,
+    REALME,,
+    REDMI,,
+    RIZZEN,,
+    SAMSUNG,,
+    STYLO,,
+    TCL,,
+    TECNO,,
+    TONGZEKANGWEI,,
+    ULEFONE,,
+    VIVO,,
+    WISEASY,,
+    WISKY,,
+    XIAOMI,,
+    ZTE,,
