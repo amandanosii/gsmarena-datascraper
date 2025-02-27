@@ -1,6 +1,8 @@
 import csv
 import time
 from pathlib import Path
+import os
+import random
 
 import requests
 import pandas as pd
@@ -20,32 +22,9 @@ class Gsmarena:
             #  ,"Model Image"
         ]
 
-        # Load the input CSV with desired brands and models
-        # self.target_devices = self.load_target_devices(input_csv_path)
-        self.target_devices = self.load_target_brands(input_csv_path)
-
-    def load_target_devices(self, csv_path):
-        """Load the brands and models from CSV file"""
-        try:
-            df = pd.read_csv(csv_path)
-            # Ensure the CSV has the required columns
-            if not all(col in df.columns for col in ["Brand", "Model"]):
-                raise ValueError("Input CSV must contain 'Brand' and 'Model' columns")
-
-            # Create a dictionary with brands as keys and list of models as values
-            devices = {}
-            for _, row in df.iterrows():
-                brand = row["Brand"].strip().lower()
-                model = row["Model"].strip()
-
-                if brand not in devices:
-                    devices[brand] = []
-                devices[brand].append(model)
-
-            return devices
-        except Exception as e:
-            print(f"Error loading target devices: {e}")
-            exit(1)
+        self.target_brands = self.load_target_brands(input_csv_path)
+        # Track existing devices to avoid duplicates
+        self.existing_devices = self.load_existing_devices()
 
     def load_target_brands(self, csv_path):
         try:
@@ -64,20 +43,55 @@ class Gsmarena:
             print(f"Error loading target brands: {e}")
             exit(1)
 
+    def load_existing_devices(self):
+        """Load already scraped devices to avoid duplicates"""
+        existing_devices = {}
+
+        # Create the dataset directory if it doesn't exist
+        if not self.absolute_path.exists():
+            return existing_devices
+
+        # Check all CSV files in the dataset directory
+        for csv_file in self.absolute_path.glob("*.csv"):
+            brand_name = csv_file.stem.lower()
+            try:
+                df = pd.read_csv(csv_file)
+                if "Model Name" in df.columns:
+                    # Create a dictionary with brand as key and list of models as values
+                    if brand_name not in existing_devices:
+                        existing_devices[brand_name] = []
+
+                    # Add all models to the list
+                    for model in df["Model Name"]:
+                        existing_devices[brand_name].append(model.strip())
+
+                    print(f"Loaded {len(df)} existing devices for {brand_name}")
+            except Exception as e:
+                print(f"Error loading existing devices from {csv_file}: {e}")
+
+        return existing_devices
+
     def crawl_html_page(self, sub_url):
         url = self.url + sub_url
         header = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
         }
-        time.sleep(2)
+        time.sleep(10)
 
         # Handling the connection error of the url.
         try:
             page = requests.get(url, timeout=5, headers=header)
+
+            # if we got rate limited, sleep for a while
+            if page.status_code == 429:
+                print("Rate limited, sleeping for 30 seconds")
+                time.sleep(30)
+                self.crawl_html_page(sub_url)
+
             soup = BeautifulSoup(page.text, "html.parser")
             return soup
         except Exception as e:
-            print(f"Error fetching page {url}: {e}")
+            print(f"Error fetching page {url}")
             return None
 
     def crawl_phone_brands(self):
@@ -92,10 +106,9 @@ class Gsmarena:
 
         for a in table_a:
             brand_name = a.contents[0]
-            # target_devices_keys = self.target_devices.keys()
 
             # Only include brands that are in our target list
-            if str(brand_name).lower() in self.target_devices:
+            if str(brand_name).lower() in self.target_brands:
                 temp = [
                     a["href"].split("-")[0],
                     brand_name,
@@ -105,10 +118,12 @@ class Gsmarena:
 
         return phones_brands
 
-    def crawl_phones_models(self, phone_brand_link):
-        """Crawl all models pages for a brand"""
+    def crawl_phones_models(self, phone_brand_link, brand_name):
+        """Crawl all models pages for a brand and filter out models we already have"""
         links = []
+        model_links = {}  # Dictionary to store model name -> link mapping
         nav_link = []
+
         soup = self.crawl_html_page(phone_brand_link)
         if not soup:
             return links
@@ -122,6 +137,7 @@ class Gsmarena:
             nav_link.append(phone_brand_link)
             nav_link.insert(0, nav_link.pop())
 
+        # Collect all model links and names
         for link in nav_link:
             soup = self.crawl_html_page(link)
             if not soup:
@@ -129,28 +145,25 @@ class Gsmarena:
 
             data = soup.find(class_="section-body")
             if data:
-                for line1 in data.find_all("a"):
-                    links.append(line1["href"])
+                for line1 in data.find_all("li"):
+                    a_tag = line1.find("a")
+                    if a_tag:
+                        model_link = a_tag["href"]
+                        # Extract model name from the listing
+                        model_name_elem = line1.find("span")
+                        if model_name_elem:
+                            model_name = model_name_elem.text.strip()
+                            # Check if we already have this model
+                            brand_key = brand_name.lower()
+                            if (
+                                brand_key in self.existing_devices
+                                and model_name in self.existing_devices[brand_key]
+                            ):
+                                print(f"Skipping already existing model: {model_name}")
+                                continue
+                            links.append(model_link)
 
         return links
-
-    # def filter_models_by_name(self, links, brand):
-    #     """Filter device links to only those models we want"""
-    #     filtered_links = []
-    #     # target_models = self.target_devices.get(brand.lower(), [])
-
-    #     for link in links:
-    #         # Extract model name from link
-    #         model_name = str(link.split("-")[0].replace("_", " ")).upper()
-
-    #         # Check if this model is in our target list (partial match)
-    #         # for target_model in target_models:
-    #         #     if target_model.lower() in model_name.lower():
-    #         filtered_links.append(link)
-    #         print(f"Found matching model: {model_name}")
-    #         break
-
-    #     return filtered_links
 
     def crawl_phones_models_specification(self, link, phone_brand):
         """Same as original, crawl the specs for a specific phone"""
@@ -178,12 +191,6 @@ class Gsmarena:
                 if not temp:
                     continue
                 else:
-                    # Handle duplicate keys
-                    # if temp[0] in phone_data.keys():
-                    #     temp[0] = temp[0] + "_1"
-                    # if temp[0] not in self.features:
-                    #     self.features.append(temp[0])
-                    # phone_data.update({temp[0]: temp[1]})
                     if "price" in str(temp[0]).lower():
                         self.features.append(temp[0])
                         phone_data.update({temp[0]: temp[1]})
@@ -200,56 +207,68 @@ class Gsmarena:
             print(f"{self.new_folder_name} directory already exists")
 
     def save_specification_to_file(self):
-        """Main function to save specifications, modified to use our target list"""
+        """Main function to save specifications, modified to use our target list and skip existing devices"""
         phone_brands = self.crawl_phone_brands()
         self.create_folder()
 
         # Process each brand in our list
         for brand in phone_brands:
             brand_name = brand[1]
+            brand_key = str(brand[0]).lower()
             output_file = self.absolute_path / f"{str(brand[0]).title()}.csv"
 
             print(f"Working on {brand_name} brand.")
 
-            # Get all models for this brand
-            all_links = self.crawl_phones_models(brand[2])
-
-            # Filter to only the models we want
-            # filtered_links = self.filter_models_by_name(all_links, brand_name)
-
+            # Get new models for this brand (filtering out ones we already have)
+            all_links = self.crawl_phones_models(brand[2], brand_name)
             if not all_links:
-                print(f"No matching models found for {brand_name}")
+                print(f"No new models found for {brand_name}")
                 continue
 
-            # Process each model
-            phones_data = []
-            for i, link in enumerate(all_links, 1):
-                print(f"Processing model {i}/{len(all_links)}: {link}")
-                datum = self.crawl_phones_models_specification(link, brand_name)
+            # Check if output file exists to append or create
+            file_exists = output_file.exists()
+            mode = "a" if file_exists else "w"
 
-                if datum:
-                    # Clean data
-                    datum = {
-                        k: v.replace("\n", " ").replace("\r", " ")
-                        for k, v in datum.items()
-                    }
-                    phones_data.append(datum)
-                    print(f"Completed {i}/{len(all_links)}")
-
-            # Save to CSV
-            if phones_data:
-                with open(output_file, "w", encoding="utf-8") as file:
-                    dict_writer = csv.DictWriter(file, fieldnames=self.features)
+            # Initialize or append to CSV file
+            with open(output_file, mode, encoding="utf-8", newline="") as file:
+                dict_writer = csv.DictWriter(file, fieldnames=self.features)
+                if not file_exists:
                     dict_writer.writeheader()
-                    for dicti in phones_data:
-                        dict_writer.writerow(dicti)
-                print(f"Data saved to {output_file}")
-            else:
-                print(f"No data collected for {brand_name}")
+
+                # Process each model
+                for i, link in enumerate(all_links, 1):
+                    print(f"Processing model {i}/{len(all_links)}: {link}")
+                    datum = self.crawl_phones_models_specification(link, brand_name)
+
+                    if datum:
+                        # Check again if we already have this model (belt and suspenders)
+                        model_name = datum.get("Model Name", "")
+                        if (
+                            brand_key in self.existing_devices
+                            and model_name in self.existing_devices[brand_key]
+                        ):
+                            print(f"Skipping duplicate model: {model_name}")
+                            continue
+
+                        # Clean data
+                        datum = {
+                            k: v.replace("\n", " ").replace("\r", " ")
+                            for k, v in datum.items()
+                        }
+                        dict_writer.writerow(datum)
+
+                        # Add to existing devices to avoid duplicates in this run
+                        if brand_key not in self.existing_devices:
+                            self.existing_devices[brand_key] = []
+                        self.existing_devices[brand_key].append(model_name)
+
+                        print(f"Completed {i}/{len(all_links)}")
+
+            print(f"Data saved to {output_file}")
 
 
 def main():
-    # Path to your input CSV file with brands and models to scrape
+    # Path to your input CSV file with brands to scrape
     input_csv_path = "target_devices.csv"
 
     try:
